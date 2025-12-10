@@ -1,4 +1,4 @@
-# 📘 Vision & Language Final Project  
+# Vision & Language Final Project  
 ## Flickr30k Image–Text Retrieval with BLIP-2
 
 This repository contains the full code, experiments, and report artifacts for my **CSE 589 (Vision & Language)** course project.
@@ -13,7 +13,7 @@ The project follows the official requirements:
 
 ---
 
-# 🧠 1. Project Overview
+# 1. Project Overview
 
 - **Task:** Image–Text Retrieval (Image→Text and Text→Image)  
 - **Model:** **BLIP-2** (`Salesforce/blip2-flan-t5-xl`, via HuggingFace Transformers)  
@@ -30,20 +30,12 @@ We treat BLIP-2 as the **SOTA model** for Flickr30k retrieval, and we:
 2. Train a **baseline projection head** on a 5k subset of Flickr30k.  
 3. Train an **improved 2-layer MLP projection head** on the same subset.  
 
-### 🎯 Grading Rubric Alignment
-
-| Requirement                               | Points |
-|-------------------------------------------|--------|
-| Identify SOTA + related work              | 5      |
-| Replicate results from released code      | 10     |
-| Proposed improvements + new results       | 5      |
-| **Total**                                 | **20** |
 
 The final **report PDF** and **Google Colab notebook** are included in this repo.
 
 ---
 
-# 📄 2. Report Structure
+#  2. Report Structure
 
 The final report strictly follows the official  
 **“05\_Course Project Report Template”**:
@@ -61,7 +53,7 @@ The compiled PDF (e.g., `V_L_Final_Report.pdf`) is in the `report/` folder.
 
 ---
 
-# 📚 3. Related Work (Summary)
+# 3. Related Work (Summary)
 
 We focus on **image–text retrieval** and compare several major vision–language models:
 
@@ -89,7 +81,7 @@ For this project, BLIP-2 offers:
 
 ---
 
-# 🧪 4. Experiments
+#  4. Experiments
 
 All experiments are run from a **single Colab notebook**:
 
@@ -165,14 +157,14 @@ Training setup:
 - Slightly more epochs (e.g., 8 vs 5)  
 - Tuned learning rate for stability  
 
-### 📊 Baseline vs Improved
+###  Baseline vs Improved
 
 | Model                    | I2T R@1 | I2T R@5 | I2T R@10 | T2I R@1 | T2I R@5 | T2I R@10 |
 |--------------------------|---------|---------|----------|---------|---------|----------|
 | **Baseline (linear head)**   | 20.67  | 41.17  | 51.10   | 20.07  | 40.47  | 50.96   |
 | **Improved (2-layer MLP)**   | **25.27**  | **46.62**  | **56.16**   | **26.10**  | **48.08**  | **58.26**   |
 
-### 💬 Performance Discussion
+###  Performance Discussion
 
 - The **pretrained** model is near random on Flickr30k in this setup.  
 - The **baseline** fine-tuned projection head already gives a **huge jump** in performance.  
@@ -188,7 +180,7 @@ This visually matches the numerical improvements.
 
 ---
 
-# 💻 5. Repository Contents
+# 5. Repository Contents
 
 ```text
 Vision-Language_Final_project/
