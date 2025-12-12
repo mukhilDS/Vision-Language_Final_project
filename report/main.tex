@@ -1,34 +1,41 @@
-\documentclass[10pt]{article}
+\documentclass[10pt,twocolumn]{article}
+
 
 \usepackage[margin=1in]{geometry}
 \usepackage{times}
+\usepackage{color}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{booktabs}
-\usepackage{tcolorbox}
 \usepackage{multirow}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
-
-\setlength{\parskip}{0.5ex}
+\setlength{\columnsep}{0.25in}
+\setlength{\parskip}{0pt}
 \setlength{\parindent}{0pt}
+\title{\textbf{Image--Text Retrieval on Flickr30k using BLIP-2:\\
+Pretrained, Baseline, and Improved Fine-Tuning}}
 
-\title{Image--Text Retrieval on Flickr30k using BLIP-2:\\
-Pretrained, Baseline, and Improved Fine-Tuning}
-
-\author{Mukhil Muruganantham Prakaash (mmm9280)} 
+\author{
+Mukhil Muruganantham Prakaash\\
+\texttt{mmm9280@psu.edu}
+}
 
 \date{}
 
 \begin{document}
+
+\twocolumn[
 \maketitle
+\vspace{-1em}
+]
 
 % -------------------------------------------------------------
-% Figure 1 -- task illustration (matches template)
+% Figure 1 -- task illustration 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.45\linewidth]{figures/fig_sample_image_24132}
+\includegraphics[width=0.95\columnwidth]{figures/fig_sample_image_24132.png}
 \caption{Illustration of the Flickr30k image--text retrieval task.
 Given an image (or a caption), the system ranks all captions (or images) and should place the correct match near the top.}
 \label{fig:task}
@@ -116,9 +123,6 @@ BLIP-2 (2023) & Flickr30k & \textbf{96.7} & \textbf{99.9} \\
 \end{tabular}
 \end{table}
 
-We treat these numbers as the SOTA reference and then study how well a BLIP-2-style model performs under our experimental design.
-
-% -------------------------------------------------------------
 \section{Approach}
 
 \subsection*{High-Level Architecture}
@@ -159,7 +163,6 @@ The baseline model is trained for 5 epochs on this subset.
 The improved model is trained on the same subset with a slightly longer schedule (8 epochs) and a tuned learning rate.
 All other hyperparameters (optimizer, batch size, temperature initialization) are kept consistent between the two runs so that differences in performance can be attributed primarily to the projection head.
 
-% -------------------------------------------------------------
 \section{Dataset}
 
 We use the Flickr30k dataset~\cite{young2014flickr30k} through the modern HuggingFace Parquet release \texttt{lmms-lab/flickr30k}, which stores images and captions directly in Parquet files and provides train/validation/test splits.
@@ -172,7 +175,6 @@ For training we sample 5{,}000 image--caption pairs from the training split.
 For evaluation we use the entire official test split.
 This design makes the experiments reproducible while still keeping the retrieval problem realistic: for each test query we rank all thousands of candidates.
 
-% -------------------------------------------------------------
 \section{Results}
 
 \subsection*{Overall Recall@K}
@@ -183,7 +185,7 @@ the baseline linear projection head (\emph{Baseline}), and
 the improved 2-layer MLP projection head (\emph{Improved}).
 All numbers are reported as percentages.
 
-\begin{table}[h]
+\begin{table*}[h]
 \centering
 \caption{Overall Flickr30k retrieval results (R@K in \%).}
 \label{tab:overall}
@@ -201,7 +203,7 @@ Improved (5k + 8 epochs) & \textbf{25.27} & \textbf{46.62} & \textbf{56.16} &
 \textbf{26.10} & \textbf{48.08} & \textbf{58.26} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 The pretrained model behaves almost like a random retrieval system on Flickr30k, with Recall@10 near zero.
 Once we train projection heads on the 5k subset, performance jumps to around 41--51\% R@5/R@10 in both directions.
@@ -214,7 +216,7 @@ Table~\ref{tab:replication} contextualizes our results with respect to the BLIP-
 The paper reports very high scores when BLIP-2 is fully trained with its complete recipe.
 Our variant keeps the backbone frozen and focuses on the projection heads.
 
-\begin{table}[h]
+\begin{table*}[h]
 \centering
 \caption{BLIP-2 paper results vs.\ our Flickr30k retrieval results (R@K in \%).}
 \label{tab:replication}
@@ -232,7 +234,7 @@ Baseline (5k) & 20.67 & 41.17 & 51.10 & 20.07 & 40.47 & 50.96 \\
 Improved (5k + 8 epochs) & 25.27 & 46.62 & 56.16 & 26.10 & 48.08 & 58.26 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Our absolute R@K values are much lower than the fully trained BLIP-2 model, which is expected because we intentionally restrict training to alignment layers on a smaller subset.
 However, this controlled setting is ideal for studying the effect of different projection heads:
@@ -262,7 +264,6 @@ Fine-tuning projection heads yields a large jump in performance, and the improve
 \label{fig:recall}
 \end{figure}
 
-% -------------------------------------------------------------
 \section{Possible Improvements and Results}
 
 \subsection*{Projection-Head Improvement}
@@ -270,7 +271,7 @@ Fine-tuning projection heads yields a large jump in performance, and the improve
 Table~\ref{tab:improvement} focuses specifically on the baseline vs.\ improved models.
 Here we see the effect of the projection-head design in isolation.
 
-\begin{table}[h]
+\begin{table*}[h]
 \centering
 \caption{Baseline vs.\ improved projection head (R@K in \%).}
 \label{tab:improvement}
@@ -287,7 +288,7 @@ Improved (2-layer MLP head) & \textbf{25.27} & \textbf{46.62} & \textbf{56.16} &
 \textbf{26.10} & \textbf{48.08} & \textbf{58.26} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 The improved model gains roughly 4.6\% absolute at R@1 for both I2T and T2I, and around 5\% at R@10.
 These consistent improvements demonstrate that a slightly deeper projection head is enough to produce more discriminative shared embeddings, even when the rest of the BLIP-2 model is frozen.
@@ -388,16 +389,18 @@ We also train on a curated 5k subset rather than the entire training set, which 
 
 Future work could fine-tune more of BLIP-2 end-to-end, train on the full Flickr30k training set, explore cross-attention-based alignment instead of separate projection heads, and incorporate hard-negative mining to further sharpen the contrastive learning signal.
 
-% -------------------------------------------------------------
 \section{Code Repository}
 
 All code, the Colab notebook, and saved metrics are available at:
 
 \medskip
 \noindent
-\begin{tcolorbox}[colback=yellow!20!white, colframe=black, boxrule=1pt]
-\textbf{\url{https://github.com/mukhilDS/Vision-Language_Final_project}}
-\end{tcolorbox}
+\fbox{%
+\parbox{0.95\linewidth}{%
+\textbf{Code Repository:}\\
+\textbf{GitHub:} \url{https://github.com/mukhilDS/Vision-Language_Final_project}
+}}
+\medskip
 
 
 \medskip
@@ -409,8 +412,6 @@ The repository includes:
     \item \texttt{outputs/improved\_run/metrics\_improved.json} (improved results).
     \item \texttt{figures/} (all plots and qualitative figures used in this report).
 \end{itemize}
-
-% -------------------------------------------------------------
 \begin{thebibliography}{9}
 
 \bibitem{radford2021clip}
